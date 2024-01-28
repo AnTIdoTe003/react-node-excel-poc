@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
 import io from "socket.io-client";
+import Loader from "./components/Loader";
 function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const showSheet = (index) => {
     setSelectedSheet(index);
   };
@@ -16,6 +18,9 @@ function App() {
     socket.on("parse:excel", async (data) => {
       console.log("Received data:", data);
       setExcelData(data);
+      if (data) {
+        setIsLoading(false);
+      }
     });
     return () => {
       socket.disconnect();
@@ -39,6 +44,7 @@ function App() {
         .then((response) => response.json())
         .then((data) => {
           console.log("Upload successful:", data);
+          setIsLoading(true);
           // socketConnection();
         })
         .catch((error) => {
@@ -49,7 +55,8 @@ function App() {
       ("No file selected.");
     }
   };
-console.log(excelData)
+  console.log(excelData);
+
   return (
     <div className="home-wrapper">
       <div className="home-container">
@@ -59,7 +66,11 @@ console.log(excelData)
           </div>
           <div className="home-add-excel">
             <label htmlFor="fileInput">
-              <p>Select an excel file</p>
+              <p>
+                {selectedFile && excelData.length !==0
+                  ? `${selectedFile?.name}`
+                  : "Select an Excel File"}
+              </p>
               <input
                 accept=".xlsx"
                 type="file"
@@ -77,25 +88,27 @@ console.log(excelData)
                 </button>
               ))}
             </div>
-
-            <table className="myTable">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {excelData[selectedSheet]?.map((item, itemIndex) => (
-                  <tr key={itemIndex}>
-                    <td>{item.product}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
+            {isLoading && <Loader />}
+            {excelData.length!==0 && (
+              <table className="myTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {excelData[selectedSheet]?.map((item, itemIndex) => (
+                    <tr key={itemIndex}>
+                      <td>{item.product}</td>
+                      <td>{item.quantity}</td>
+                      <td>{item.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

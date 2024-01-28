@@ -47,16 +47,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            span {
-              color: #425ebd;
-              text-align: center;
-              font-family: Poppins;
-              font-size: 14px;
-              font-style: normal;
-              font-weight: 500;
-              line-height: 140%;
-              text-decoration-line: underline;
-            }
           }
         }
         input[type="file"] {
@@ -65,22 +55,28 @@
             outline: 2px solid #4285f4;
           }
         }
-        button {
-          background: black;
-          color: #bab9b9;
-          font-family: Poppins;
-          font-size: 14px;
-          font-style: normal;
-          font-weight: 500;
-          line-height: 140%;
-          padding: 10px 15px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
         input[type="file"]::-webkit-file-upload-button {
           visibility: hidden;
           display: none;
+        }
+        button {
+          border-radius: 5px;
+          border: 1px solid transparent;
+           padding: 10px 15px;
+          font-size: 1em;
+          font-weight: 500;
+          font-family: Poppins;
+          background-color: #1a1a1a;
+          color: #bab9b9;
+          cursor: pointer;
+          transition: border-color 0.25s;
+        }
+        button:hover {
+          border-color: #646cff;
+        }
+        button:focus,
+        button:focus-visible {
+          outline: 4px auto -webkit-focus-ring-color;
         }
       }
       .home-table-wrapper {
