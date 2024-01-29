@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
-import "./style.scss";
+import  { useEffect, useState } from "react";
 import io from "socket.io-client";
 import Loader from "./components/Loader";
+import "./style.scss";
+
 function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const showSheet = (index) => {
-    setSelectedSheet(index);
-  };
   const [excelData, setExcelData] = useState([]);
-  // const socketConnection = () => {
-
-  // };
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
-    socket.on("parse:excel", async (data) => {
+    socket.on("parse:excel", (data) => {
       console.log("Received data:", data);
       setExcelData(data);
       if (data) {
@@ -26,6 +21,7 @@ function App() {
       socket.disconnect();
     };
   }, []);
+
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -45,17 +41,43 @@ function App() {
         .then((data) => {
           console.log("Upload successful:", data);
           setIsLoading(true);
-          // socketConnection();
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
         });
     } else {
-      console.error();
-      ("No file selected.");
+      console.error("No file selected.");
     }
   };
-  console.log(excelData);
+
+  const renderTable = () => {
+    if (excelData.length === 0 || !excelData[selectedSheet]) {
+      return null;
+    }
+
+    const headers = Object.keys(excelData[selectedSheet][0]);
+
+    return (
+      <table className="myTable">
+        <thead>
+          <tr>
+            {headers.map((header) => (
+              <th key={header}>{header}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {excelData[selectedSheet].map((item, itemIndex) => (
+            <tr key={itemIndex}>
+              {headers.map((header) => (
+                <td key={header}>{item[header]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
 
   return (
     <div className="home-wrapper">
@@ -67,7 +89,7 @@ function App() {
           <div className="home-add-excel">
             <label htmlFor="fileInput">
               <p>
-                {selectedFile && excelData.length !==0
+                {selectedFile && excelData.length !== 0
                   ? `${selectedFile?.name}`
                   : "Select an Excel File"}
               </p>
@@ -78,37 +100,18 @@ function App() {
                 onChange={handleFileChange}
               />
             </label>
-            <button onClick={() => handleUpload()}>Upload</button>
+            <button onClick={handleUpload}>Upload</button>
           </div>
           <div className="home-table-wrapper">
             <div className="sheet-buttons">
               {excelData?.map((_, index) => (
-                <button key={index} onClick={() => showSheet(index)}>
+                <button key={index} onClick={() => setSelectedSheet(index)}>
                   Sheet {index + 1}
                 </button>
               ))}
             </div>
             {isLoading && <Loader />}
-            {excelData.length!==0 && (
-              <table className="myTable">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {excelData[selectedSheet]?.map((item, itemIndex) => (
-                    <tr key={itemIndex}>
-                      <td>{item.product}</td>
-                      <td>{item.quantity}</td>
-                      <td>{item.price}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+            {renderTable()}
           </div>
         </div>
       </div>
