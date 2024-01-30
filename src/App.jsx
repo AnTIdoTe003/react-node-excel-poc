@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import {  useState } from "react";
 import io from "socket.io-client";
 import Loader from "./components/Loader";
 import "./style.scss";
@@ -7,23 +7,18 @@ function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
-
-  useEffect(() => {
+  const handleSocket = () => {
     const socket = io("http://localhost:5000");
     socket.on("parse:excel", (data) => {
       console.log("Received data:", data);
       setExcelData(data);
       if (data) {
         setIsLoading(false);
+        socket.disconnect();
       }
     });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
+  };
   const [selectedFile, setSelectedFile] = useState(null);
-
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -41,6 +36,7 @@ function App() {
         .then((data) => {
           console.log("Upload successful:", data);
           setIsLoading(true);
+          handleSocket();
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
@@ -111,9 +107,7 @@ function App() {
               ))}
             </div>
             {isLoading && <Loader />}
-            <div className="table-wrapper">
-            {renderTable()}
-            </div>
+            <div className="table-wrapper">{renderTable()}</div>
           </div>
         </div>
       </div>
