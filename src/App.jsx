@@ -111,7 +111,9 @@ function App() {
               ))}
             </div>
             {isLoading && <Loader />}
+            <div className="table-wrapper">
             {renderTable()}
+            </div>
           </div>
         </div>
       </div>
