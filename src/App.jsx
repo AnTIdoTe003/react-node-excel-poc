@@ -34,11 +34,9 @@ function App() {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("csv", selectedFile);
-      const headers = new Headers();
-      headers.append("deviceId", deviceID);
       fetch("http://localhost:8080/upload-excel", {
         method: "POST",
-        headers: headers,
+        headers: { deviceId: deviceID },
         body: formData,
       })
         .then((response) => response.json())
