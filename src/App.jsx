@@ -7,13 +7,13 @@ function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
-
   const [deviceID, setDeviceID] = useState("");
 
   useEffect(() => {
     const generatedDeviceID = uuidv4();
     setDeviceID(generatedDeviceID);
   }, []);
+  console.log("deviceId", deviceID);
   const handleSocket = () => {
     const socket = io("http://localhost:5000");
     socket.on("parse:excel", (data) => {
