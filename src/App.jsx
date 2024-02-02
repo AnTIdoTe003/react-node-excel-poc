@@ -29,6 +29,7 @@ function App() {
       setExcelData(data);
       if (data) {
         setIsLoading(false);
+        setIsDataAvailable(true);
         socket.disconnect();
       }
     });
@@ -54,7 +55,6 @@ function App() {
           console.log("Upload successful:", data);
           setIsLoading(true);
           handleSocket();
-          setIsDataAvailable(true);
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
