@@ -3,17 +3,20 @@ import io from "socket.io-client";
 import Loader from "./components/Loader";
 import "./style.scss";
 import { v4 as uuidv4 } from "uuid";
+
 function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [deviceID, setDeviceID] = useState("");
-
+  const [isDataAvailable, setIsDataAvailable] = useState(false);
   useEffect(() => {
     const generatedDeviceID = uuidv4();
     setDeviceID(generatedDeviceID);
   }, []);
+
   console.log("deviceId", deviceID);
+
   const handleSocket = () => {
     const socket = io("http://localhost:5000", {
       query: {
@@ -32,6 +35,7 @@ function App() {
   };
 
   const [selectedFile, setSelectedFile] = useState(null);
+
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -50,6 +54,7 @@ function App() {
           console.log("Upload successful:", data);
           setIsLoading(true);
           handleSocket();
+          setIsDataAvailable(true);
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
@@ -109,7 +114,18 @@ function App() {
                 onChange={handleFileChange}
               />
             </label>
-            <button onClick={handleUpload}>Upload</button>
+            <button disabled={isDataAvailable} onClick={handleUpload}>
+              Upload
+            </button>
+            {isDataAvailable && (
+              <button
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                Generate Another One
+              </button>
+            )}
           </div>
           <div className="home-table-wrapper">
             <div className="sheet-buttons">
