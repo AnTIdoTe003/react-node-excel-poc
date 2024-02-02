@@ -15,7 +15,12 @@ function App() {
   }, []);
   console.log("deviceId", deviceID);
   const handleSocket = () => {
-    const socket = io("http://localhost:5000");
+    const socket = io("http://localhost:5000", {
+      query: {
+        deviceId: deviceID,
+      },
+    });
+
     socket.on("parse:excel", (data) => {
       console.log("Received data:", data);
       setExcelData(data);
@@ -25,6 +30,7 @@ function App() {
       }
     });
   };
+
   const [selectedFile, setSelectedFile] = useState(null);
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
