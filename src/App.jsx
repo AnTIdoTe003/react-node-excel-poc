@@ -1,12 +1,19 @@
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import Loader from "./components/Loader";
 import "./style.scss";
-
+import { v4 as uuidv4 } from "uuid";
 function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
+
+  const [deviceID, setDeviceID] = useState("");
+
+  useEffect(() => {
+    const generatedDeviceID = uuidv4();
+    setDeviceID(generatedDeviceID);
+  }, []);
   const handleSocket = () => {
     const socket = io("http://localhost:5000");
     socket.on("parse:excel", (data) => {
@@ -27,9 +34,11 @@ function App() {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("csv", selectedFile);
-
+      const headers = new Headers();
+      headers.append("deviceId", deviceID);
       fetch("http://localhost:8080/upload-excel", {
         method: "POST",
+        headers: headers,
         body: formData,
       })
         .then((response) => response.json())
