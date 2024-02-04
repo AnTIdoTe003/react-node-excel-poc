@@ -3,13 +3,14 @@ import io from "socket.io-client";
 import Loader from "./components/Loader";
 import "./style.scss";
 import { v4 as uuidv4 } from "uuid";
-
+import { FaCloudDownloadAlt } from "react-icons/fa";
 function App() {
   const [selectedSheet, setSelectedSheet] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
   const [deviceID, setDeviceID] = useState("");
   const [isDataAvailable, setIsDataAvailable] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     const generatedDeviceID = uuidv4();
     setDeviceID(generatedDeviceID);
@@ -17,13 +18,16 @@ function App() {
 
   console.log("deviceId", deviceID);
 
+  const handleDownload = () => {
+    window.location.href = "http://localhost:8080/generate-excel";
+  };
+
   const handleSocket = () => {
     const socket = io("http://localhost:5000", {
       query: {
         deviceId: deviceID,
       },
     });
-
     socket.on("parse:excel", (data) => {
       console.log("Received data:", data);
       setExcelData(data);
@@ -34,8 +38,6 @@ function App() {
       }
     });
   };
-
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -98,26 +100,33 @@ function App() {
       <div className="home-container">
         <div className="home-content">
           <div className="home-header">
-            <h1>Internal Demo</h1>
-          </div>
-          <div className="home-add-excel">
-            <label htmlFor="fileInput">
-              <p>
-                {selectedFile && excelData.length !== 0
-                  ? `${selectedFile?.name}`
-                  : "Select an Excel File"}
-              </p>
-              <input
-                accept=".xlsx"
-                type="file"
-                id="fileInput"
-                onChange={handleFileChange}
-              />
-            </label>
-            <button disabled={isDataAvailable} onClick={handleUpload}>
-              Upload
+            <h1>Product Dashboard</h1>
+            <button onClick={handleDownload}>
+              Download Template <FaCloudDownloadAlt />
             </button>
-            {isDataAvailable && (
+          </div>
+          {!isDataAvailable && (
+            <div className="home-add-excel">
+              <label htmlFor="fileInput">
+                <p>
+                  {selectedFile && excelData.length !== 0
+                    ? `${selectedFile?.name}`
+                    : "Select an Excel File"}
+                </p>
+                <input
+                  accept=".xlsx"
+                  type="file"
+                  id="fileInput"
+                  onChange={handleFileChange}
+                />
+              </label>
+              <button disabled={isDataAvailable} onClick={handleUpload}>
+                Upload
+              </button>
+            </div>
+          )}{" "}
+          {isDataAvailable && (
+            <div className="home-refresh-upload">
               <button
                 onClick={() => {
                   window.location.reload();
@@ -125,8 +134,8 @@ function App() {
               >
                 Generate Another One
               </button>
-            )}
-          </div>
+            </div>
+          )}
           <div className="home-table-wrapper">
             <div className="sheet-buttons">
               {excelData?.map((_, index) => (

@@ -6,6 +6,11 @@
 }
 .home-wrapper {
   width: 100%;
+  background: url("https://media.istockphoto.com/id/1260038121/vector/light-grey-coloured-wood-textured-vector-backgrounds-with-fine-wood-grains-pattern-all-over.jpg?s=612x612&w=0&k=20&c=PBKxm4sVezEgyMVudiSGLw7dvfV6FQJ-5TPjj6AWw2c=");
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   .home-container {
     width: 100%;
     max-width: 1440px;
@@ -17,11 +22,32 @@
       gap: 20px;
       align-items: center;
       .home-header {
+        width: 100%;
         padding-top: 20px;
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
         h1 {
           font-family: Poppins;
           font-size: 32px;
           font-weight: 500;
+        }
+        button {
+          width: 204px;
+          max-width: fit-content;
+          height: 40px;
+          border-radius: 6px;
+          background: #1a1a1a;
+          border: 1px solid #ddd;
+          padding: 10px;
+          font-size: 0.8rem;
+          font-weight: 400;
+          font-family: Poppins;
+          color: #bab9b9;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
         }
       }
       .home-add-excel {
@@ -35,20 +61,27 @@
           flex-direction: column;
           justify-content: center;
           align-items: center;
+
           p {
-            background: black;
-            color: #bab9b9;
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #1a1a1a;
             font-family: Poppins;
             font-size: 14px;
             font-style: normal;
             font-weight: 500;
             line-height: 140%;
             padding: 10px 15px;
-            border: none;
             border-radius: 5px;
             cursor: pointer;
+            transform: scale(1);
+            transition: transform 0.5s ease;
+            &:hover {
+              transform: scale(1.05);
+            }
           }
         }
+
         input[type="file"] {
           display: none;
           &:focus + label {
@@ -63,7 +96,7 @@
           width: max-content;
           border-radius: 5px;
           border: 1px solid transparent;
-          padding: 10px 15px;
+          padding: 7px 15px;
           font-size: 1em;
           font-weight: 500;
           font-family: Poppins;
@@ -77,11 +110,33 @@
           }
         }
         button:hover {
-          border-color: #646cff;
+          border-color: #ffffff;
         }
         button:focus,
         button:focus-visible {
           outline: 4px auto -webkit-focus-ring-color;
+        }
+      }
+      .home-refresh-upload {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        button {
+          width: 114px;
+          max-width: fit-content;
+          height: 40px;
+          border-radius: 6px;
+          background: #1a1a1a;
+          border: 1px solid #ddd;
+          padding: 10px;
+          font-size: 0.8rem;
+          font-weight: 400;
+          font-family: Poppins;
+          color: #bab9b9;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
         }
       }
       .home-table-wrapper {
